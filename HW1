@@ -40,3 +40,138 @@ public class SimulationDriver {
         votingService.printResults();
     }
 }
+
+
+import java.util.HashMap;
+import java.util.Map;
+
+class VotingService {
+    private Question question;
+    private Map<String, Integer> answerCounts;
+
+    // Constructor: Initialize the VotingService with a question
+    public VotingService(Question question) {
+        this.question = question;
+        
+        // Initialize answerCounts for each candidate answer
+        answerCounts = new HashMap<>();
+        for (String candidateAnswer : question.getCandidateAnswers()) {
+            answerCounts.put(candidateAnswer, 0);
+        }
+    }
+
+    // Register a student's answer
+    public void submitAnswer(Student student) {
+        String answer = student.getAnswer();
+        
+        // Check if the submitted answer is valid for the question
+        if (question.getCandidateAnswers().contains(answer)) {
+            // Increment the count for the selected answer
+            answerCounts.put(answer, answerCounts.get(answer) + 1);
+        }
+    }
+
+    // Print the aggregated results for the question
+    public void printResults() {
+        System.out.println("Results for question: " + question.getQuestionText());
+        
+        // Iterate through candidate answers and print their counts
+        for (String candidateAnswer : question.getCandidateAnswers()) {
+            int count = answerCounts.get(candidateAnswer);
+            System.out.println(candidateAnswer + ": " + count);
+        }
+    }
+}
+
+
+
+import java.util.List;
+
+class Question {
+    private String questionText;
+    private List<String> candidateAnswers;
+
+    // Constructor: Initialize a question with questionText and candidateAnswers
+    public Question(String questionText, List<String> candidateAnswers) {
+        this.questionText = questionText;
+        this.candidateAnswers = candidateAnswers;
+    }
+
+    // Get the text of the question
+    public String getQuestionText() {
+        return questionText;
+    }
+
+    // Get the list of candidate answers for the question
+    public List<String> getCandidateAnswers() {
+        return candidateAnswers;
+    }
+}
+
+import java.util.*;
+
+class Student {
+    private String id;      // Student's unique identifier
+    private String answer;  // Student's answer to a question
+
+    // Constructor: Initialize a Student with an ID and an answer
+    public Student(String id, String answer) {
+        this.id = id;
+        this.answer = answer;
+    }
+
+    // Get the ID of the Student
+    public String getId() {
+        return id;
+    }
+
+    // Get the answer provided by the Student
+    public String getAnswer() {
+        return answer;
+    }
+}
+
+
+
+import java.util.Arrays;  // Import the Arrays class from java.util
+import java.util.List;
+
+public class SingleChoiceQuestion extends Question {
+    private String[] candidateAnswers;  // Array to store candidate answers
+
+    // Constructor: Initialize a SingleChoiceQuestion with questionText and candidateAnswers
+    public SingleChoiceQuestion(String questionText, String[] candidateAnswers) {
+        super(questionText, Arrays.asList(candidateAnswers));  // Call the superclass constructor
+
+        // Initialize the candidateAnswers array
+        this.candidateAnswers = candidateAnswers;
+    }
+
+    // Override the getCandidateAnswers method to return candidateAnswers as a List
+    @Override
+    public List<String> getCandidateAnswers() {
+        return Arrays.asList(candidateAnswers);
+    }
+}
+
+
+
+import java.util.List;
+
+public class MultipleChoiceQuestion extends Question {
+    private List<String> candidateAnswers;  // List to store candidate answers
+
+    // Constructor: Initialize a MultipleChoiceQuestion with questionText and candidateAnswers
+    public MultipleChoiceQuestion(String questionText, List<String> candidateAnswers) {
+        super(questionText, candidateAnswers);  // Call the superclass constructor
+
+        // Initialize the candidateAnswers list
+        this.candidateAnswers = candidateAnswers;
+    }
+
+    // Override the getCandidateAnswers method to return candidateAnswers as a List
+    @Override
+    public List<String> getCandidateAnswers() {
+        return candidateAnswers;
+    }
+}
